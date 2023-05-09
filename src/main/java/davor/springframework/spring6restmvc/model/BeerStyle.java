@@ -1,4 +1,6 @@
 package davor.springframework.spring6restmvc.model;
 
-public class BeerStyle {
+public enum BeerStyle {
+    LAGER,  PILSNER, STOUT, GOSE, PORTER, ALE, WHEAT,
+    IPA, PALE_ALE, SAISON
 }
