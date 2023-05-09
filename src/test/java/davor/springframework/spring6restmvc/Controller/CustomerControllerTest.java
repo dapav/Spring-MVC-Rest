@@ -16,6 +16,8 @@ class CustomerControllerTest {
 
     @Test
     void getCustomerById() {
+
         System.out.println(customerController.getCustomerById(UUID.randomUUID()));
     }
+
 }
