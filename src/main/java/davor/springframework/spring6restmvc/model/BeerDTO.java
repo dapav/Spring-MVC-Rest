@@ -11,7 +11,7 @@ import java.util.UUID;
 @Slf4j
 @AllArgsConstructor
 @Data
-public class Beer {
+public class BeerDTO {
     private UUID id;
     private Integer version;
     private String beerName;
