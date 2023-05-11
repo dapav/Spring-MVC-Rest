@@ -55,7 +55,7 @@ public class BeerController {
     }
 
     @GetMapping(BEER_PATH)
-    private List<BeerDTO> listBeers(){
+    public List<BeerDTO> listBeers(){
         return beerService.listBeers();
     }
 
