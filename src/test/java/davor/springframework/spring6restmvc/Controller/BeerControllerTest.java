@@ -24,6 +24,7 @@ import static org.mockito.BDDMockito.given;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -109,7 +110,7 @@ class BeerControllerTest {
         given(beerService.saveNewBeer(any(Beer.class))).
                 willReturn(beerServiceImpl.listBeers().get(1));
 
-        mockMvc.perform(post("/api/v1/beer")
+        mockMvc.perform(post(BeerController.BEER_PATH)
                 .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(beer)))
@@ -127,12 +128,20 @@ class BeerControllerTest {
                 .andExpect(jsonPath("$.length()", is(3)));
     }
     @Test
+    void getBeerByIdNotFound() throws Exception{
+
+        given(beerService.getBeerById(any(UUID.class))).
+                willReturn(Optional.empty());
+        mockMvc.perform(get(BeerController.BEER_PATH_ID, UUID.randomUUID()))
+                .andExpect(status().isNotFound());
+    }
+    @Test
     void getBeerById() throws Exception {
 
         Beer testBeer = beerServiceImpl.listBeers().get(0);
 
         given(beerService.getBeerById(testBeer.getId()))
-                .willReturn(testBeer);
+                .willReturn(Optional.of(testBeer));
 
         mockMvc.perform(get("/api/v1/beer/"+testBeer.getId())
                 .accept(MediaType.APPLICATION_JSON))

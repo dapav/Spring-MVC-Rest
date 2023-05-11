@@ -25,6 +25,7 @@ import static org.mockito.Mockito.mock;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -109,19 +110,27 @@ class CustomerControllerTest {
         given(customerService.saveNewCustomer(any(Customer.class)))
                 .willReturn(customerServiceImpl.listCustomers().get(1));
 
-        mockMvc.perform(post("/api/v1/customer")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(customer)))
+        mockMvc.perform(post(CustomerController.CUSTOMER_PATH)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(customer)))
                 .andExpect(status().isCreated())
                 .andExpect(header().exists("Location"));
+
+    }
+
+    @Test
+    void getCustomerByIdNotFound() throws Exception{
+        given(customerService.getCustomerById(any(UUID.class))).willReturn(Optional.empty());
+        mockMvc.perform(get(CustomerController.CUSTOMER_PATH_ID, UUID.randomUUID()))
+                .andExpect(status().isNotFound());
     }
     @Test
     void getCustomerById() throws Exception {
         Customer testCustomer = customerServiceImpl.listCustomers().get(0);
 
         given(customerService.getCustomerById(testCustomer.getId()))
-                .willReturn(testCustomer);
+                .willReturn(Optional.of(testCustomer));
 
         mockMvc.perform(get("/api/v1/customer/" +testCustomer.getId())
                 .accept(MediaType.APPLICATION_JSON))
@@ -135,7 +144,7 @@ class CustomerControllerTest {
         given(customerService.listCustomers()).willReturn(customerServiceImpl
                 .listCustomers());
 
-        mockMvc.perform(get("/api/v1/customer")
+        mockMvc.perform(get(CustomerController.CUSTOMER_PATH)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
