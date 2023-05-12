@@ -46,7 +46,7 @@ public class CustomerController {
     }
 
    @GetMapping(CUSTOMER_PATH)
-    private List<CustomerDTO> listCustomer(){
+    public List<CustomerDTO> listCustomer(){
 
         return customerService.listCustomers();
     }
